@@ -35,7 +35,7 @@ public class OrderTest {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][]{
-                //{"Иван", "Иванов", "Москва, ул. Ленина, д. 1", "Китай-город", "12345678901", "chrome"},
+                {"Иван", "Иванов", "Москва, ул. Ленина, д. 1", "Китай-город", "12345678901", "chrome"},
                 {"Анна", "Петрова", "Санкт-Петербург, пл. Революции, д. 5", "Невский проспект", "09876543210", "firefox"}
         });
     }
