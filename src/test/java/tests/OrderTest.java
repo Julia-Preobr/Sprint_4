@@ -12,24 +12,24 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.MainPage;
 
-import static org.junit.Assert.assertThrows;
-import static org.junit.Assert.assertTrue;
-
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 
+import static org.junit.Assert.assertTrue;
+
 @RunWith(Parameterized.class)
 public class OrderTest {
-    private WebDriver driver;
     private String name;
     private String surname;
     private String address;
     private String metro;
     private String phone;
     private String browser;
+
+    private WebDriver driver;
     private WebDriverWait wait;
 
     @Parameterized.Parameters
@@ -52,13 +52,11 @@ public class OrderTest {
     @Before
     public void setUp() {
         if (browser.equals("chrome")) {
-            System.setProperty("webdriver.chrome.driver", "C:\\Users\\Acer\\work\\WebDriver\\bin\\chromedriver.exe");
             driver = new ChromeDriver();
         } else if (browser.equals("firefox")) {
-            //System.setProperty("webdriver.gecko.driver", "C:\\Users\\Acer\\work\\WebDriver\\bin\\geckodriver.exe");
             driver = new FirefoxDriver();
         }
-        driver.get("https://qa-scooter.praktikum-services.ru/");
+        driver.get(MainPage.TEST_URL);
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
@@ -74,22 +72,15 @@ public class OrderTest {
         fillOrderForm();
 
         // Оформление заказа
-        try {
-            // Дождитесь, пока кнопка станет кликабельной
-            wait.until(ExpectedConditions.elementToBeClickable(By.xpath("(//button[contains(text(), 'Заказать')])[last()]"))).click();
-        } catch (NoSuchElementException e) {
-            System.out.println("Кнопка 'Заказать' не найдена!");
-        } catch (ElementClickInterceptedException e) {
-            System.out.println("Кнопка 'Заказать' перекрыта другим элементом!");
-            ((JavascriptExecutor) driver).executeScript("arguments[0].click();", orderButton);
-        }
+        wait.until(ExpectedConditions.elementToBeClickable(MainPage.LAST_SUBMIT_BUTTON)).click();
+
         //driver.findElement(MainPage.SUBMIT_BUTTON).click();
 
         // ПОдтверждение
-        By divLocator = By.xpath("//div[contains(text(), 'Хотите оформить заказ?')]"); // Замените на нужный текст
+        By divLocator = MainPage.CONFIRMATION_BUTTON; // Замените на нужный текст
         wait.until(ExpectedConditions.visibilityOfElementLocated(divLocator))
-                .findElement(By.xpath(".."))
-                .findElement(By.xpath(".//button[contains(text(), 'Да')]"))
+                .findElement(MainPage.PARENT_ELEMENT)
+                .findElement(MainPage.YES_BUTTON)
                 .click();
 
         assertTrue(driver.findElement(MainPage.SUCCESS_MESSAGE).isDisplayed());
@@ -139,22 +130,6 @@ public class OrderTest {
 
         // Ввод комментария
         driver.findElement(MainPage.COMMENT_INPUT).sendKeys("ПРИВЕТ");
-    }
-
-    @Test
-    public void testFAQQuestions() {
-        ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
-
-        // Проверка вопросов о важном
-        driver.findElements(MainPage.FAQ_BUTTON).forEach(button -> {
-            button.click();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-            assertTrue(driver.findElement(By.xpath("//div[@class = 'accordion_panel']")).isDisplayed());
-        });
     }
 
     @After

@@ -3,8 +3,13 @@ package pages;
 import org.openqa.selenium.By;
 
 public class MainPage {
+    public static final String TEST_URL = "https://qa-scooter.praktikum-services.ru/";
+
     // Заголовок страницы
     public static final By PAGE_TITLE = By.tagName("h1");
+
+    public static final By PARENT_ELEMENT = By.xpath("..");
+    public static final By YES_BUTTON = By.xpath(".//button[contains(text(), 'Да')]");
 
     // Кнопка «Заказать» (верхняя)
     public static final By ORDER_BUTTON_TOP = By.xpath("//button[text()='Заказать']");
@@ -36,19 +41,15 @@ public class MainPage {
     public static final By COLOR_RADIO_BUTTON = By.xpath("//input[@id='black' or @id='grey']");
     public static final By COMMENT_INPUT = By.xpath("//input[@placeholder='Комментарий для курьера']");
 
+    public static final By CONFIRMATION_BUTTON = By.xpath("//div[contains(text(), 'Хотите оформить заказ?')]");
+
     // Кнопка оформления заказа
     public static final By SUBMIT_BUTTON = By.xpath("//button[contains(text(), 'Заказать')]");
+    public static final By LAST_SUBMIT_BUTTON = By.xpath("(//button[contains(text(), 'Заказать')])[last()]");
 
     // Сообщение об успешном создании заказа
     public static final By SUCCESS_MESSAGE = By.xpath("//div[contains(text(), 'Заказ оформлен')]");
 
-    // Вопросы о важном
-    public static final By FAQ_QUESTION = By.xpath("//button[contains(text(), 'Сколько это стоит? И как оплатить?')]" +
-            "|//button[contains(text(), 'Хочу сразу несколько самокатов! Так можно?')]" +
-            "|//button[contains(text(), 'Как рассчитывается время аренды?')]" +
-            "|//button[contains(text(), 'Можно ли заказать самокат прямо на сегодня?')]" +
-            "|//button[contains(text(), 'Можно ли продлить заказ или вернуть самокат раньше?')]" +
-            "|//button[contains(text(), 'Вы привозите зарядку вместе с самокатом?')]" +
-            "|//button[contains(text(), 'Можно ли отменить заказ?')]" +
-            "|//button[contains(text(), 'Я живу за МКАДом, привезёте?')]");
+    public static final By ACCORDION_BUTTON = By.xpath("//div[@class='accordion__button']");
+    public static final By ACCORDION_PANEL = By.xpath("//div[@class='accordion__panel']");
 }
