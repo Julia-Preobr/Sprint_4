@@ -74,10 +74,14 @@ public class FAQTest {
     public void testFAQQuestions() {
         // Прокрутка страницы к FAQ
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
+
         // Кликаем по вопросу
         clickElementsWithText(MainPage.ACCORDION_BUTTON, question);
 
+        // Определяем конкретный локатор для ответа
         By answerLocator = MainPage.getPByText(answer);
+
+        // Ждем пока появится ожидаемый ответ
         new WebDriverWait(driver, Duration.ofSeconds(10)).until(
                 ExpectedConditions.visibilityOfElementLocated(answerLocator)
         );

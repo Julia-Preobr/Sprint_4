@@ -11,17 +11,13 @@ public class MainPage {
     public static final By PARENT_ELEMENT = By.xpath("..");
     public static final By YES_BUTTON = By.xpath(".//button[contains(text(), 'Да')]");
 
+    public static final By REACT_DATE_PICKER = By.className("react-datepicker");
+
     // Кнопка «Заказать» (верхняя)
     public static final By ORDER_BUTTON_TOP = By.xpath("//button[text()='Заказать']");
 
     // Кнопка «Заказать» (нижняя)
     public static final By ORDER_BUTTON_BOTTOM = By.xpath("(//button[text()='Заказать'])[last()]");
-
-    // Выпадающий список вопросов FAQ
-    public static final By FAQ_BUTTON = By.xpath("//div[@class = 'accordion__button']");
-
-    // Текст, появляющийся после нажатия на кнопку FAQ
-    public static final By FAQ_TEXT = By.xpath("//div[contains(@class, 'accordion__panel')]");
 
     // Поля для заполнения формы заказа
     public static final By NAME_INPUT = By.xpath("//input[@placeholder='* Имя']");
@@ -50,9 +46,21 @@ public class MainPage {
     // Сообщение об успешном создании заказа
     public static final By SUCCESS_MESSAGE = By.xpath("//div[contains(text(), 'Заказ оформлен')]");
 
+    // Выпадающий список вопросов FAQ
     public static final By ACCORDION_BUTTON = By.xpath("//div[@class='accordion__button']");
 
+    // Текст, появляющийся после нажатия на кнопку FAQ
+    public static By getDaySelectorOnDate(String formattedDate) {
+        String dateXpath = String.format("//div[contains(@class, 'react-datepicker__day') and text()='%s']", formattedDate);
+        return By.xpath(dateXpath);
+    }
+
+    // Текст, появляющийся после нажатия на кнопку FAQ
     public static By getPByText(String text) {
         return By.xpath("//div[contains(@class, 'accordion__panel')]/p[contains(text(), '" + text + "')]");
+    }
+
+    public static By getInputWithText(String text) {
+        return By.xpath("//input[@value='" + text + "']");
     }
 }

@@ -5,7 +5,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.*;
+import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -93,7 +95,7 @@ public class OrderTest {
         driver.findElement(MainPage.METRO_INPUT).sendKeys(metro);
 
         // Здесь вводим метро
-        By metroValue = By.xpath("//input[@value='" + metro + "']");
+        By metroValue = MainPage.getInputWithText(metro);
         driver.findElement(metroValue).sendKeys(Keys.ARROW_DOWN);
         driver.findElement(metroValue).sendKeys(Keys.ENTER);
 
@@ -107,16 +109,14 @@ public class OrderTest {
 
         // Выбор даты
         driver.findElement(MainPage.DATE_PICKER).click();
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.className("react-datepicker")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(MainPage.REACT_DATE_PICKER));
 
         // Получаем следующую дату
         LocalDate nextDate = LocalDate.now().plusDays(1);
         String formattedDate = nextDate.format(DateTimeFormatter.ofPattern("d"));
 
         // В XPath используем форматированную дату для выбора элемента
-        String dateXpath = String.format("//div[contains(@class, 'react-datepicker__day') and text()='%s']", formattedDate);
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(dateXpath))).click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(MainPage.getDaySelectorOnDate(formattedDate))).click();
 
         // Выбор срока аренды
         driver.findElement(MainPage.RENT_DURATION_DROPDOWN).click(); // Открываем выпадающий список сроков аренды
