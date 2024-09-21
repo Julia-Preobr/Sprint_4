@@ -51,5 +51,8 @@ public class MainPage {
     public static final By SUCCESS_MESSAGE = By.xpath("//div[contains(text(), 'Заказ оформлен')]");
 
     public static final By ACCORDION_BUTTON = By.xpath("//div[@class='accordion__button']");
-    public static final By ACCORDION_PANEL = By.xpath("//div[@class='accordion__panel']");
+
+    public static By getPByText(String text) {
+        return By.xpath("//div[contains(@class, 'accordion__panel')]/p[contains(text(), '" + text + "')]");
+    }
 }
