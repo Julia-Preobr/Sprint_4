@@ -8,7 +8,6 @@ import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -32,6 +31,8 @@ public class FAQTest {
     private final String answer;
 
     private WebDriver driver;
+    private WebDriverWait wait;
+    private MainPage mainPage;
 
     public FAQTest(String browser, String question, String answer) {
         this.browser = browser;
@@ -68,6 +69,8 @@ public class FAQTest {
             driver = new FirefoxDriver();
         }
         driver.get(MainPage.TEST_URL);
+        wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        mainPage = new MainPage(driver, wait);
     }
 
     @Test
@@ -76,7 +79,7 @@ public class FAQTest {
         ((JavascriptExecutor) driver).executeScript("window.scrollTo(0, document.body.scrollHeight);");
 
         // Кликаем по вопросу
-        clickElementsWithText(MainPage.ACCORDION_BUTTON, question);
+        MainPage.clickElementsWithText(driver.findElements(MainPage.ACCORDION_BUTTON), question);
 
         // Определяем конкретный локатор для ответа
         By answerLocator = MainPage.getPByText(answer);
@@ -87,29 +90,7 @@ public class FAQTest {
         );
 
         // Проверка, что ответ отображается
-        assertTrue(isAnswerDisplayed(answerLocator));
-    }
-
-    private void clickElementsWithText(By by, String text) {
-        WebElement button = findElementsWithText(by, text);
-        if (button == null) {
-            throw new RuntimeException("Не найден элемент с текстом: " + text);
-        }
-        button.click();
-    }
-
-    private WebElement findElementsWithText(By by, String text) {
-        List<WebElement> elements = driver.findElements(by);
-        for (WebElement element : elements) {
-            if (element.getText().contains(text)) {
-                return element;
-            }
-        }
-        return null;
-    }
-
-    public boolean isAnswerDisplayed(By answerLocator) {
-        return driver.findElement(answerLocator).isDisplayed();
+        assertTrue(mainPage.isAnswerDisplayed(answerLocator));
     }
 
     @After

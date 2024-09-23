@@ -8,6 +8,7 @@ import org.junit.runners.Parameterized;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -33,6 +34,7 @@ public class OrderTest {
 
     private WebDriver driver;
     private WebDriverWait wait;
+    private MainPage mainPage;
 
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
@@ -60,6 +62,7 @@ public class OrderTest {
         }
         driver.get(MainPage.TEST_URL);
         wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        mainPage = new MainPage(driver, wait);
     }
 
     @Test
@@ -71,65 +74,19 @@ public class OrderTest {
 
     private void testOrderButton(By orderButton) {
         driver.findElement(orderButton).click();
-        fillOrderForm();
+        mainPage.fillOrderForm(name, surname, address, metro, phone);
 
         // Оформление заказа
         wait.until(ExpectedConditions.elementToBeClickable(MainPage.LAST_SUBMIT_BUTTON)).click();
 
-        //driver.findElement(MainPage.SUBMIT_BUTTON).click();
-
-        // ПОдтверждение
-        By divLocator = MainPage.CONFIRMATION_BUTTON; // Замените на нужный текст
+        // Подтверждение
+        By divLocator = MainPage.CONFIRMATION_BUTTON;
         wait.until(ExpectedConditions.visibilityOfElementLocated(divLocator))
                 .findElement(MainPage.PARENT_ELEMENT)
                 .findElement(MainPage.YES_BUTTON)
                 .click();
 
         assertTrue(driver.findElement(MainPage.SUCCESS_MESSAGE).isDisplayed());
-    }
-
-    private void fillOrderForm() {
-        driver.findElement(MainPage.NAME_INPUT).sendKeys(name);
-        driver.findElement(MainPage.SURNAME_INPUT).sendKeys(surname);
-        driver.findElement(MainPage.ADDRESS_INPUT).sendKeys(address);
-        driver.findElement(MainPage.METRO_INPUT).sendKeys(metro);
-
-        // Здесь вводим метро
-        By metroValue = MainPage.getInputWithText(metro);
-        driver.findElement(metroValue).sendKeys(Keys.ARROW_DOWN);
-        driver.findElement(metroValue).sendKeys(Keys.ENTER);
-
-        driver.findElement(MainPage.PHONE_INPUT).sendKeys(phone);
-        try {
-            driver.findElement(MainPage.COOKIES_BUTTON).click();
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-        }
-        driver.findElement(MainPage.NEXT_BUTTON).click();
-
-        // Выбор даты
-        driver.findElement(MainPage.DATE_PICKER).click();
-        wait.until(ExpectedConditions.visibilityOfElementLocated(MainPage.REACT_DATE_PICKER));
-
-        // Получаем следующую дату
-        LocalDate nextDate = LocalDate.now().plusDays(1);
-        String formattedDate = nextDate.format(DateTimeFormatter.ofPattern("d"));
-
-        // В XPath используем форматированную дату для выбора элемента
-        wait.until(ExpectedConditions.visibilityOfElementLocated(MainPage.getDaySelectorOnDate(formattedDate))).click();
-
-        // Выбор срока аренды
-        driver.findElement(MainPage.RENT_DURATION_DROPDOWN).click(); // Открываем выпадающий список сроков аренды
-
-        // Ожидание и выбор одного из вариантов; например, выбираем первый элемент:
-        wait.until(ExpectedConditions.visibilityOfElementLocated(MainPage.RENT_DURATION_OPTION));
-        driver.findElement(MainPage.RENT_DURATION_OPTION).click(); // Здесь нужно убедиться, что этот элемент правильно определен в MainPage
-
-        // Выбор цвета самоката
-        driver.findElement(MainPage.COLOR_RADIO_BUTTON).click(); // Выберите черный или серый
-
-        // Ввод комментария
-        driver.findElement(MainPage.COMMENT_INPUT).sendKeys("ПРИВЕТ");
     }
 
     @After
